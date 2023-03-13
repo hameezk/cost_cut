@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cost_cut/pages/maps.dart';
 import 'package:cost_cut/widgets/snackbar.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,13 +12,17 @@ import '../models/offer_model.dart';
 
 class OfferDetails extends StatefulWidget {
   final OfferModel offerModel;
-  const OfferDetails({Key? key, required this.offerModel}) : super(key: key);
+  final bool fromfav;
+  const OfferDetails(
+      {Key? key, required this.offerModel, required this.fromfav})
+      : super(key: key);
 
   @override
   State<OfferDetails> createState() => _OfferDetailsState();
 }
 
 class _OfferDetailsState extends State<OfferDetails> {
+  List<String> favoutires = [];
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -63,7 +69,7 @@ class _OfferDetailsState extends State<OfferDetails> {
                         child: Column(
                           children: [
                             Text(
-                              widget.offerModel.category,
+                              widget.offerModel.category ?? '',
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             Row(
@@ -72,7 +78,7 @@ class _OfferDetailsState extends State<OfferDetails> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(70),
                                   child: Image.network(
-                                    widget.offerModel.image,
+                                    widget.offerModel.image ?? '',
                                     height: 100,
                                     width: size.width * 0.65,
                                   ),
@@ -90,14 +96,14 @@ class _OfferDetailsState extends State<OfferDetails> {
                               ],
                             ),
                             Text(
-                              widget.offerModel.name,
+                              widget.offerModel.name ?? '',
                               style: Theme.of(context).textTheme.headline3,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8.0, vertical: 8),
                               child: Text(
-                                widget.offerModel.description,
+                                widget.offerModel.description ?? '',
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
@@ -110,7 +116,8 @@ class _OfferDetailsState extends State<OfferDetails> {
                                   backgroundColor:
                                       MaterialStateProperty.all(kBlueColor)),
                               onPressed: () async {
-                                var url = Uri.parse(widget.offerModel.url);
+                                var url =
+                                    Uri.parse(widget.offerModel.url ?? '');
                                 if (!await launchUrl(url)) {
                                   showCustomSnackbar(
                                       context: context,
@@ -120,6 +127,20 @@ class _OfferDetailsState extends State<OfferDetails> {
                               },
                               child: const Text('Visit Store'),
                             ),
+                            (widget.fromfav)
+                                ? Container(
+                                    height: 0,
+                                  )
+                                : ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                kBlueColor)),
+                                    onPressed: () async {
+                                      addFavourite();
+                                    },
+                                    child: const Text('Add Favourite'),
+                                  ),
                           ],
                         ),
                       ),
@@ -134,7 +155,7 @@ class _OfferDetailsState extends State<OfferDetails> {
                     ),
                   ),
                   ExpandableText(
-                    widget.offerModel.description,
+                    widget.offerModel.description ?? '',
                     animation: true,
                     style: const TextStyle(
                       fontSize: 16,
@@ -155,7 +176,7 @@ class _OfferDetailsState extends State<OfferDetails> {
                       SizedBox(
                         height: size.width * 0.85,
                         width: size.width * 0.85,
-                        child: ShowMap(),
+                        child: showMap(),
                       ),
                     ],
                   ),
@@ -169,10 +190,23 @@ class _OfferDetailsState extends State<OfferDetails> {
     );
   }
 
-  ShowMap() {
-    return Image.asset(
-      'assets/images/maps.png',
-      fit: BoxFit.contain,
+  showMap() {
+    return ShowMap(offerModels: [widget.offerModel]);
+  }
+
+  Future<void> addFavourite() async {
+    // if (favoutires.contains(widget.offerModel.id)) {
+    // } else {
+    favoutires.add(widget.offerModel.id!);
+    await FirebaseFirestore.instance
+        .collection("favourites")
+        .doc(widget.offerModel.id!)
+        .set(widget.offerModel.toMap())
+        .then(
+      (value) {
+        showCustomSnackbar(context: context, content: 'Favorites added!');
+      },
     );
+    // }
   }
 }

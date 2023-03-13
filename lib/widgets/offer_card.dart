@@ -65,6 +65,7 @@ class _OfferCardState extends State<OfferCard> {
                     type: PageTransitionType.rightToLeft,
                     child: OfferDetails(
                       offerModel: offerModel,
+                      fromfav: false,
                     ),
                   ),
                 );
@@ -83,7 +84,7 @@ class _OfferCardState extends State<OfferCard> {
                         children: [
                           FittedBox(
                             child: Text(
-                              offerModel.category,
+                              offerModel.category??'',
                               textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
@@ -101,7 +102,7 @@ class _OfferCardState extends State<OfferCard> {
                               child: SizedBox(
                                 height: 50,
                                 width: MediaQuery.of(context).size.width * 0.45,
-                                child: Image.network(offerModel.image,
+                                child: Image.network(offerModel.image??'',
                                     errorBuilder: (context, error, stackTrace) {
                                   return const Placeholder();
                                 }),
@@ -109,7 +110,7 @@ class _OfferCardState extends State<OfferCard> {
                             ),
                           ),
                           Text(
-                            offerModel.name,
+                            offerModel.name??'',
                             style:
                                 Theme.of(context).textTheme.bodyText1!.copyWith(
                                       fontWeight: FontWeight.w700,
@@ -121,7 +122,7 @@ class _OfferCardState extends State<OfferCard> {
                             child: SizedBox(
                               height: 80,
                               child: Text(
-                                offerModel.description,
+                                offerModel.description??'',
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 4,
                                 textAlign: TextAlign.start,

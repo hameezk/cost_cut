@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cost_cut/pages/maps.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -190,12 +191,8 @@ class _SearchPageState extends State<SearchPage> {
                                       : Expanded(
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: Image.asset(
-                                                'assets/images/maps.png'),
-                                            //     ShowMap(
-                                            //   offerModels: searchedOffers,
-                                            //   categories: allCategories,
-                                            // ),
+                                            child: ShowMap(
+                                                offerModels: searchedOffers),
                                           ),
                                         );
                               //     ],
@@ -296,7 +293,11 @@ class _SearchPageState extends State<SearchPage> {
       );
 
   searchOffers() async {
-    searchedOffers = OfferModel.demoOffers;
+    for (var element in OfferModel.offers) {
+      if (element.name!.contains(searchCOntroller.text.trim())) {
+        searchedOffers.add(element);
+      }
+    }
   }
 
   void _handleSearch() async {
@@ -336,6 +337,7 @@ class RecentSearches extends StatefulWidget {
 class _RecentSearchesState extends State<RecentSearches> {
   @override
   Widget build(BuildContext context) {
+    print(OfferModel.offers.length);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(

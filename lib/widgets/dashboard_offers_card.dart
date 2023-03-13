@@ -71,7 +71,7 @@ class DashboardCard extends StatelessWidget {
                     child: SizedBox(
                       width: 55,
                       child: Image.network(
-                        offerModel.image,
+                        offerModel.image??'',
                       ),
                     ),
                   ),

@@ -6,6 +6,7 @@ class UserModel {
   String? post_code;
   String? d_address;
   String? username;
+  String? role;
 
   UserModel({
     required this.id,
@@ -15,6 +16,7 @@ class UserModel {
     required this.d_address,
     required this.post_code,
     required this.username,
+    required this.role,
   });
 
   UserModel.fromMap(Map<String, dynamic> map) {
@@ -25,6 +27,7 @@ class UserModel {
     post_code = map["post_code"];
     d_address = map["d_address"];
     username = map["username"];
+    role = map["role"];
   }
 
   Map<String, dynamic> toMap() {
@@ -36,6 +39,8 @@ class UserModel {
       "post_code": post_code,
       "d_address": d_address,
       "username": username,
+      "role": role,
+
     };
   }
 

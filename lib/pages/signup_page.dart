@@ -465,6 +465,7 @@ class _SignupPageState extends State<SignupPage> {
         d_address: address,
         post_code: postalCode,
         username: fullName,
+        role: 'user'
       );
 
       await FirebaseFirestore.instance
